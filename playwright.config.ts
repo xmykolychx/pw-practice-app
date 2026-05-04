@@ -23,12 +23,20 @@ export default defineConfig<TestOptions>({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ['html', { open: 'never' }],
-    ['json', { outputFile: 'test-results/test-results.json' }],
-    ['junit', { outputFile: 'test-results/test-results.xml' }],
-    //['allure-playwright'],
-  ],
+  reporter: 
+    [
+      process.env.CI ? ['dot'] : ['list'],
+      [
+        "@argos-ci/playwright-reporter",
+        {
+          uploadToArgos: !!process.env.CI,
+        },
+      ],
+      ['json', { outputFile: 'test-results/test-results.json' }],
+      ['junit', { outputFile: 'test-results/test-results.xml' }],
+      ['html'],
+      //['allure-playwright'],
+    ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -39,6 +47,7 @@ export default defineConfig<TestOptions>({
     //  : 'http://localhost:4201/',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
     video: {
       mode: 'on-first-retry',
       size: {width: 1280, height: 720},
