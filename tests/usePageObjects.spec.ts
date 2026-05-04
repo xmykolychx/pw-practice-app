@@ -18,7 +18,7 @@ test('navigate to form page', async ({page}) => {
     await pm.toNavigationPage().tooltipPage();
 });
 
-test.describe.only('submit form with credentials', () => {
+test.describe('submit form with credentials', () => {
     test.describe.configure({retries: 2});
     
     test('submit form with credentials', async ({page}) => {
